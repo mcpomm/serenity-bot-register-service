@@ -7,8 +7,9 @@ const io = require('socket.io')(server);
 
 require('./db').connect;
 
-const routes = require('./api/routes/botListRoutes');
+const routes = require('./api/routes/botRoutes');
 const BotPusher = require('./push_services/bot');
+const BotListPusher = require('./push_services/botlist');
 const bodyParser = require('body-parser');
 app.use(express.static('node_modules'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,6 +26,7 @@ routes(app);
 
 io.on('connection', function(client) {
   let botPusher = new BotPusher(client);
+  let botListPusher = new BotListPusher(client);
 
   console.log('Client connected...');
 
@@ -37,6 +39,7 @@ io.on('connection', function(client) {
     client.broadcast.emit('broad',data);
   });
   //start(client);
+  botListPusher.push();
   botPusher.push('bot1');
 });
 

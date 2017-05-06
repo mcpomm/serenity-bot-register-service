@@ -2,5 +2,5 @@
 
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-require('./api/models/botListModel');
+require('./api/models/botModel');
 exports.connect = mongoose.connect('mongodb://localhost/Botdb');
