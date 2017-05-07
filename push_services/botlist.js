@@ -16,6 +16,7 @@ class BotListPusher {
         return console.log(err);
       }
       console.log(bots.body);
+      client.emit('botList', bots.body);
     })
   }
 

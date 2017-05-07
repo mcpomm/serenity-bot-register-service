@@ -18,28 +18,16 @@ app.use(bodyParser.json());
 routes(app);
 
 
-// function start(client){
-//   setInterval(function(){
-//     client.emit('broad', "Bot registered " + Math.random())
-//   }, 1000);
-// }
 
 io.on('connection', function(client) {
   let botPusher = new BotPusher(client);
   let botListPusher = new BotListPusher(client);
 
-  console.log('Client connected...');
-
-  client.on('join', function(data) {
-    console.log(data);
+  client.on('getBotList', function(data) {
+    console.log('botList required');
+    botListPusher.push();
   });
 
-  client.on('messages', function(data) {
-    client.emit('broad', data);
-    client.broadcast.emit('broad',data);
-  });
-  //start(client);
-  botListPusher.push();
   botPusher.push('bot1');
 });
 
