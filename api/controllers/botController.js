@@ -3,6 +3,9 @@
 
 const mongoose = require('mongoose');
 const Bot = mongoose.model('Bots');
+const axon = require('axon');
+const socket = axon.socket('push');
+socket.connect(3010);
 
 exports.list_all_bots = function(req, res) {
   Bot.find({}, function(err, Bot) {
@@ -18,6 +21,7 @@ exports.create_a_bot = function(req, res) {
   new_bot.save(function(err, Bot) {
     if (err)
       res.send(err);
+    socket.send(JSON.stringify({type:"sendBot", data:Bot}));
     res.json(Bot);
   });
 };
