@@ -5,8 +5,7 @@ const mongoose = require('mongoose');
 const Bot = mongoose.model('Bots');
 const axon = require('axon');
 const socket = axon.socket('push');
-const SocketIOClient = require('socket.io-client');
-const ioClient = SocketIOClient('http://localhost:3001');
+
 socket.connect(3010);
 
 exports.list_all_bots = function(req, res) {
@@ -19,12 +18,11 @@ exports.list_all_bots = function(req, res) {
 
 
 exports.create_a_bot = function(req, res) {
-  var new_bot = new Bot(req.body);
+  let new_bot = new Bot(req.body);
   new_bot.save(function(err, Bot) {
     if (err)
       res.send(err);
-    //socket.send(JSON.stringify({type:"sendBot", data:Bot}));
-    ioClient.emit('newBot',Bot);
+    socket.send(JSON.stringify({message:"pushBotList"}));
     res.json(Bot);
   });
 };
