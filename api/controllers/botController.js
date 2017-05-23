@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const Bot = mongoose.model('Bots');
 const axon = require('axon');
 const socket = axon.socket('push');
+const debug = require('debug')('Serenity:Bot:RegiserService:botController');
 
 socket.connect(3010);
 
@@ -18,6 +19,7 @@ exports.list_all_bots = function(req, res) {
 
 
 exports.create_a_bot = function(req, res) {
+  debug('create a bot', req.body);
   let new_bot = new Bot(req.body);
   new_bot.save(function(err, Bot) {
     if (err)
