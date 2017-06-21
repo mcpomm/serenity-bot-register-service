@@ -24,14 +24,16 @@ exports.create_a_bot = function(req, res) {
   new_bot.save(function(err, Bot) {
     if (err)
       res.send(err);
-    socket.send(JSON.stringify({message:"pushBotList"}));
+    console.log('pushBot', Bot._id)
+    socket.send(JSON.stringify({message:"pushBot", botId:Bot._id}));
     res.json(Bot);
   });
 };
 
 
 exports.read_a_bot = function(req, res) {
-  Bot.findById(req.params.BotId, function(err, Bot) {
+  debug("req.params.BotId", req.params);
+  Bot.findById(req.params.botId, function(err, Bot) {
     if (err)
       res.send(err);
     res.json(Bot);
@@ -40,7 +42,7 @@ exports.read_a_bot = function(req, res) {
 
 
 exports.update_a_bot = function(req, res) {
-  Bot.findOneAndUpdate(req.params.BotId, req.body, {new: true}, function(err, Bot) {
+  Bot.findOneAndUpdate(req.params.botId, req.body, {new: true}, function(err, Bot) {
     if (err)
       res.send(err);
     res.json(Bot);
@@ -50,7 +52,7 @@ exports.update_a_bot = function(req, res) {
 
 exports.delete_a_bot = function(req, res) {
   Bot.remove({
-    _id: req.params.BotId
+    _id: req.params.botId
   }, function(err, Bot) {
     if (err)
       res.send(err);
