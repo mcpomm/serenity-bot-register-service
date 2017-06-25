@@ -11,9 +11,10 @@ socket.connect(3010);
 
 exports.list_all_bots = function(req, res) {
   Bot.find({}, function(err, Bot) {
-    if (err)
-      res.send(err);
-    res.json(Bot);
+    if (err){
+      return res.send(err);
+    }
+    return res.json(Bot);
   });
 };
 
@@ -22,11 +23,11 @@ exports.create_a_bot = function(req, res) {
   debug('create a bot', req.body);
   let new_bot = new Bot(req.body);
   new_bot.save(function(err, Bot) {
-    if (err)
-      res.send(err);
-    console.log('pushBot', Bot._id)
+    if (err){
+      return res.send(err);
+    }
     socket.send(JSON.stringify({message:"pushBot", botId:Bot._id}));
-    res.json(Bot);
+    return res.json(Bot);
   });
 };
 
@@ -34,18 +35,23 @@ exports.create_a_bot = function(req, res) {
 exports.read_a_bot = function(req, res) {
   debug("req.params.BotId", req.params);
   Bot.findById(req.params.botId, function(err, Bot) {
-    if (err)
-      res.send(err);
-    res.json(Bot);
+    if (err){
+      return res.send(err);
+    }
+    return res.json(Bot);
   });
 };
 
 
 exports.update_a_bot = function(req, res) {
-  Bot.findOneAndUpdate(req.params.botId, req.body, {new: true}, function(err, Bot) {
-    if (err)
-      res.send(err);
-    res.json(Bot);
+  Bot.findByIdAndUpdate(req.params.botId, req.body, {new: true}, function(err, Bot) {
+    console.log("BotId",req.params.botId);
+    console.log("update Bot", Bot);
+    if (err){
+      return res.send(err);
+    }
+    socket.send(JSON.stringify({message:"updateBot", botId:Bot._id}));
+    return res.json(Bot);
   });
 };
 
@@ -54,8 +60,9 @@ exports.delete_a_bot = function(req, res) {
   Bot.remove({
     _id: req.params.botId
   }, function(err, Bot) {
-    if (err)
-      res.send(err);
-    res.json({ message: 'Bot successfully deleted' });
+    if (err){
+      return res.send(err);
+    }
+    return res.json({ message: 'Bot successfully deleted' });
   });
 };
