@@ -6,6 +6,7 @@ const Bot = mongoose.model('Bots');
 const axon = require('axon');
 const socket = axon.socket('push');
 const debug = require('debug')('Serenity:Bot:RegiserService:botController');
+const BotImageService = require('../services/botImageService')
 
 socket.connect(3010);
 
@@ -26,6 +27,12 @@ exports.create_a_bot = function(req, res) {
     if (err){
       return res.send(err);
     }
+    BotImageService.getListImage(Bot.title, function(err, listImage){
+      if(err){
+        return console.log(err);
+      }
+      return console.log("listImage"+listImage);
+    });
     socket.send(JSON.stringify({message:"pushBot", botId:Bot._id}));
     return res.json(Bot);
   });
