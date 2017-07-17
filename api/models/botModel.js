@@ -24,6 +24,14 @@ let BotSchema = new Schema({
     type: String,
     default: 'offline'
   },
+  listImage: {
+    type: String,
+    default: 'unknown'
+  },
+  detailImage: {
+    type: String,
+    default: 'unknown'
+  },
   control: {
     type: Boolean,
     default: false

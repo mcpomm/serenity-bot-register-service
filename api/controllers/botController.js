@@ -22,19 +22,15 @@ exports.list_all_bots = function(req, res) {
 
 exports.create_a_bot = function(req, res) {
   debug('create a bot', req.body);
-  let new_bot = new Bot(req.body);
-  new_bot.save(function(err, Bot) {
-    if (err){
-      return res.send(err);
-    }
-    BotImageService.getListImage(Bot.title, function(err, listImage){
-      if(err){
-        return console.log(err);
+  _setImages(req.body, (err) => {
+    let new_bot = new Bot(req.body);
+    new_bot.save(function(err, Bot) {
+      if (err){
+        return res.send(err);
       }
-      return console.log("listImage"+listImage);
+      socket.send(JSON.stringify({message:"pushBot", botId:Bot._id}));
+      return res.json(Bot);
     });
-    socket.send(JSON.stringify({message:"pushBot", botId:Bot._id}));
-    return res.json(Bot);
   });
 };
 
@@ -73,3 +69,15 @@ exports.delete_a_bot = function(req, res) {
     return res.json({ message: 'Bot successfully deleted' });
   });
 };
+
+
+const _setImages = (data, cb) => {
+  BotImageService.getImage(data.title, function(err, images){
+    if(err){
+      return cb(err);
+    }
+    data.listImage = images.listImage;
+    data.detailImage = images.detailImage;
+    return cb(null);
+  });
+}

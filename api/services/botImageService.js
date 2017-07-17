@@ -19,39 +19,47 @@ function _fileExist(path, cb){
   });
 };
 
-function _download(bot, localPath, cb){
+function _download(bot, localPath, params, cb){
+  if (params){
+    localPath = localPath.replace('.png', '_detail.png');
+  }
   let options = {
-    url: urljoin(imageService, bot),
+    url: urljoin(imageService, bot, params).replace(/\/$/, ""),
     dest: localPath
   }
   download.image(options)
     .then(({ filename, image }) => {
-      console.log('File saved to', filename)
       cb(null, filename);
     }).catch((err) => {
-      console.log(options);
       cb(err);
     });
 };
 
 
-function getListImage(bot, cb){
+function getImage(bot, cb){
   let file = path.join(localPath, `list_${bot}.png`);
+  let images = {};
   _fileExist(file, (exist) => {
     if(exist){
-      console.log(`list images for bot ${bot} exist`);
+      console.log(`list images for bot ${bot} already exist`);
       return cb(null, file);
     }
-    // return cb(`list images for bot ${bot} doesn't exist`);
-    _download(bot, file, (err, savedFile) => {
+    _download(bot, file, null, (err, savedListFile) => {
       if(err){
         return cb(err)
       }
-      return cb(null, savedFile)
+      images.listImage = savedListFile;
+      _download(bot, file, '?bgset=bg2', (err, savedDetailFile) => {
+        if(err){
+          return cb(err)
+        }
+        images.detailImage = savedDetailFile;
+        return cb(null, images)
+      });
     });
   });
 };
 
 module.exports = Object.create({
-  getListImage
+  getImage
 });
