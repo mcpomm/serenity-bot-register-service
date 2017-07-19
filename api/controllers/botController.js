@@ -72,7 +72,7 @@ exports.delete_a_bot = function(req, res) {
 
 
 const _setImages = (data, cb) => {
-  BotImageService.getImage(data.title, function(err, images){
+  BotImageService.getImages(data.title, function(err, images){
     if(err){
       return cb(err);
     }
