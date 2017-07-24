@@ -11,7 +11,7 @@ require('./db').connect;
 const routes = require('./api/routes/botRoutes');
 
 const bodyParser = require('body-parser');
-app.use(express.static('node_modules'));
+app.use(express.static('assets'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

@@ -33,11 +33,11 @@ function getImages(bot, cb){
 
   download(bot, file, null)
     .then(savedListFile => {
-      images.listImage = savedListFile;
+      images.listImage = savedListFile.replace('assets/','http://localhost:3000/');
       return download(bot, file, '?bgset=bg2')
     })
     .then(savedDetailFile => {
-      images.detailImage = savedDetailFile;
+      images.detailImage = savedDetailFile.replace('assets/','http://localhost:3000/');
       return cb(null, images)
     })
     .catch(e => {
