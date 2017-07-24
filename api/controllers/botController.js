@@ -76,6 +76,10 @@ const _setImages = (data, cb) => {
     if(err){
       return cb(err);
     }
+    if(!images){
+      console.log(`Images for ${data.title} already saved.`);
+      return cb(null);
+    }
     data.listImage = images.listImage;
     data.detailImage = images.detailImage;
     return cb(null);
